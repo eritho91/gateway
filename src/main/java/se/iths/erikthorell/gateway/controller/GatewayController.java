@@ -19,24 +19,43 @@ public class GatewayController {
         this.proxyService = proxyService;
     }
 
+    //Tar emot GET-anrop för alla produkter och skickar med JWT-token
     @GetMapping("/products")
     public ResponseEntity<String> products(HttpServletRequest request) {
         ResponseEntity<String> response = proxyService.products(request.getHeader(HttpHeaders.AUTHORIZATION));
         return response;
     }
 
+    //Tar emot GET-anrop för en specifik produkt
+    //samt skickar vidare id och token
     @GetMapping("/products/{id}")
     public ResponseEntity<String> productById(@PathVariable Long id, HttpServletRequest request) {
         ResponseEntity<String> response = proxyService.productById(id, request.getHeader(HttpHeaders.AUTHORIZATION));
         return response;
     }
 
+    //Tar emot inloggningsuppgifterna
+    //samt skickar dessa till auth-server
     @PostMapping("/auth/login")
     public ResponseEntity<String> login(
             @RequestBody String requestBody,
             HttpServletRequest request) {
         return proxyService.login(
                 requestBody,
+                request.getHeader(HttpHeaders.CONTENT_TYPE)
+        );
+    }
+
+    //Tar emot en order
+    //och skickar vidare token, orderdata och content type
+    @PostMapping("/orders")
+    public ResponseEntity<String> createOrder(
+            @RequestBody String requestBody,
+            HttpServletRequest request) {
+
+        return proxyService.createOrder(
+                requestBody,
+                request.getHeader(HttpHeaders.AUTHORIZATION),
                 request.getHeader(HttpHeaders.CONTENT_TYPE)
         );
     }
