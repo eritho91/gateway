@@ -60,6 +60,12 @@ public class GatewayController {
         );
     }
 
+    //anropar metoden logout
+    //skickar vidare till proxyService där logiken för logout sker
+    @PostMapping("/auth/logout")
+    public ResponseEntity<Void> logout() {
+        return proxyService.logout();
+    }
     //Tar emot POST-anrop för att skapa en produkt
 //och skickar vidare produktdata och JWT-token
 @PostMapping("/products")
