@@ -231,17 +231,50 @@ public class GatewayProxyService {
     }
 
     //Skickar produktdata till product-service för att skapa en produkt
-public ResponseEntity<String> createProduct(
+    public ResponseEntity<String> createProduct(
+            String requestBody,
+            String authorization,
+            String contentType
+    ) {
+        return forwardPost(
+                productServiceUrl,
+                "/products",
+                requestBody,
+                authorization,
+                contentType
+        );
+    }
+
+    
+// Vidarebefordrar registrering till auth-server
+public ResponseEntity<String> register(
         String requestBody,
-        String authorization,
-        String contentType
-) {
+        String contentType) {
+
     return forwardPost(
-            productServiceUrl,
-            "/products",
+            authServerUrl,
+            "/auth/register",
             requestBody,
-            authorization,
+            null,
             contentType
     );
 }
+
+    // Raderar autentiseringscookien
+    public ResponseEntity<Void> logout() {
+
+        ResponseCookie cookie = ResponseCookie
+                .from("access_token", "")
+                .httpOnly(true)
+                .secure(cookieSecure)
+                .sameSite(cookieSameSite)
+                .path("/")
+                .maxAge(Duration.ZERO)
+                .build();
+
+        return ResponseEntity.noContent()
+                .header(HttpHeaders.SET_COOKIE, cookie.toString())
+                .build();
+    }
+
 }
