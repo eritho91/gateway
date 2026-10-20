@@ -174,6 +174,22 @@ public class GatewayProxyService {
         }
     }
 
+    public ResponseEntity<Void> logout() {
+        ResponseCookie cookie = ResponseCookie
+                .from("access_token", "") //skapar tom("") cookie med samma namn som vid login
+                .httpOnly(true) //behåller cookie-inställningen
+                .secure(cookieSecure) //använde samma secure-inställning
+                .sameSite(cookieSameSite) //behåller SameSite-inställning
+                .path("/") //sökvägen matchar den ursprungliga cookien
+                .maxAge(Duration.ZERO) //raderar cookien direkt vid logout
+                .build();
+
+        //returnerar noContent (204), dvs. utloggningen behöver inte returnera response body
+        return ResponseEntity.noContent()
+                .header(HttpHeaders.SET_COOKIE, cookie.toString())
+                .build();
+    }
+
     //Skickar orderinformation till order-service tillsammans med JWT-token
     public ResponseEntity<String> createOrder(
             String requestBody,

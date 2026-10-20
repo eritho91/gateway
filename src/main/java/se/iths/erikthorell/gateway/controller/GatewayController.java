@@ -59,4 +59,11 @@ public class GatewayController {
                 request.getHeader(HttpHeaders.CONTENT_TYPE)
         );
     }
+
+    //anropar metoden logout
+    //skickar vidare till proxyService där logiken för logout sker
+    @PostMapping("/auth/logout")
+    public ResponseEntity<Void> logout() {
+        return proxyService.logout();
+    }
 }
