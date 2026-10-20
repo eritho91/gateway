@@ -35,6 +35,7 @@ public class GatewayController {
     //samt skickar dessa till auth-server
     //bytt från string till ? då vi kan returnera olika typer
     //loginwithcookie använder då sendlogin och createloginresponse från service
+    //test
     @PostMapping("/auth/login")
     public ResponseEntity<?> login(
             @RequestBody String requestBody,
