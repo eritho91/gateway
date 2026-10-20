@@ -143,4 +143,9 @@ public class GatewayProxyService {
                     .body("Anropet avbröts");
         }
     }
+
+    //Skickar ett POST-anrop till auth-servern och vidarebefordrar både JWT-token och request body.
+    public ResponseEntity<String> admins(String body, String authHeader, String contentType) {
+        return forwardPost(authServerUrl, "/admins", body, authHeader, contentType);
+    }
 }
