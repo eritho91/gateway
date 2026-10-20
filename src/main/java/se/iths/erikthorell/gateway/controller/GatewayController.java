@@ -2,12 +2,9 @@ package se.iths.erikthorell.gateway.controller;
 
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.HttpHeaders;
-import java.net.http.HttpRequest;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import se.iths.erikthorell.gateway.service.GatewayProxyService;
-
-import java.net.URI;
 
 //Tar emot frontends Http-anrop
 @RestController
@@ -36,11 +33,13 @@ public class GatewayController {
 
     //Tar emot inloggningsuppgifterna
     //samt skickar dessa till auth-server
+    //bytt från string till ? då vi kan returnera olika typer
+    //loginwithcookie använder då sendlogin och createloginresponse från service
     @PostMapping("/auth/login")
-    public ResponseEntity<String> login(
+    public ResponseEntity<?> login(
             @RequestBody String requestBody,
             HttpServletRequest request) {
-        return proxyService.login(
+        return proxyService.loginWithCookie(
                 requestBody,
                 request.getHeader(HttpHeaders.CONTENT_TYPE)
         );

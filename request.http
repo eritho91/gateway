@@ -1,0 +1,7 @@
+POST http://localhost:9003/gateway/auth/login
+Content-Type: application/json
+
+{
+  "username": "aslihan.taskin94@gmail.com",
+  "password": "ADMIN1234"
+}
