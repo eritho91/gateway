@@ -59,4 +59,18 @@ public class GatewayController {
                 request.getHeader(HttpHeaders.CONTENT_TYPE)
         );
     }
+
+    //Tar emot POST-anrop för att skapa en produkt
+//och skickar vidare produktdata och JWT-token
+@PostMapping("/products")
+public ResponseEntity<String> createProduct(
+        @RequestBody String requestBody,
+        HttpServletRequest request) {
+
+    return proxyService.createProduct(
+            requestBody,
+            request.getHeader(HttpHeaders.AUTHORIZATION),
+            request.getHeader(HttpHeaders.CONTENT_TYPE)
+    );
+}
 }
