@@ -73,4 +73,17 @@ public ResponseEntity<String> createProduct(
             request.getHeader(HttpHeaders.CONTENT_TYPE)
     );
 }
+
+    
+@PostMapping("/auth/register")
+public ResponseEntity<String> register(
+        @RequestBody String requestBody,
+        HttpServletRequest request) {
+
+    return proxyService.register(
+            requestBody,
+                request.getHeader(HttpHeaders.CONTENT_TYPE)
+        );
+    }
+
 }
