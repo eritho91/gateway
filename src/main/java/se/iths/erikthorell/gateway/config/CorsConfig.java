@@ -1,3 +1,4 @@
+
 package se.iths.erikthorell.gateway.config;
 
 import org.springframework.context.annotation.Bean;
@@ -13,31 +14,30 @@ public class CorsConfig {
 
     @Bean
     public UrlBasedCorsConfigurationSource corsConfigurationSource() {
-        CorsConfiguration corsConfiguration = new CorsConfiguration();
+        CorsConfiguration config = new CorsConfiguration();
 
-        //Frontend från de här portarna får anropa gatewayen
-        corsConfiguration.setAllowedOrigins(List.of(
+        config.setAllowedOrigins(List.of(
                 "http://localhost:5173",
                 "http://localhost:5174",
                 "http://localhost:5175"
         ));
 
-        //Tillåtna HTTP-metoder
-        corsConfiguration.setAllowedMethods(List.of(
+        config.setAllowedMethods(List.of(
                 "GET", "POST", "PUT", "DELETE", "OPTIONS"
         ));
 
-        //Tillåtna headers
-        corsConfiguration.setAllowedHeaders(List.of(
+        config.setAllowedHeaders(List.of(
                 "Authorization", "Content-Type", "Accept"
         ));
 
-        UrlBasedCorsConfigurationSource urlSource =
+        // Tillåter cookies mellan frontend och gateway
+        config.setAllowCredentials(true);
+
+        UrlBasedCorsConfigurationSource source =
                 new UrlBasedCorsConfigurationSource();
 
-        urlSource.registerCorsConfiguration("/**", corsConfiguration);
-
-        return urlSource;
+        source.registerCorsConfiguration("/**", config);
+        return source;
     }
 
     @Bean
