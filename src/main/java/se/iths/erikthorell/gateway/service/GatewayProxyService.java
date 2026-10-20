@@ -229,4 +229,19 @@ public class GatewayProxyService {
                     .body("Anropet avbröts");
         }
     }
+
+    //Skickar produktdata till product-service för att skapa en produkt
+public ResponseEntity<String> createProduct(
+        String requestBody,
+        String authorization,
+        String contentType
+) {
+    return forwardPost(
+            productServiceUrl,
+            "/products",
+            requestBody,
+            authorization,
+            contentType
+    );
+}
 }
