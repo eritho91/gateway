@@ -1,4 +1,3 @@
-
 package se.iths.erikthorell.gateway.controller;
 
 import jakarta.servlet.http.Cookie;
@@ -29,13 +28,20 @@ public class GatewayController {
             }
         }
 
-        // Stödjer även tidigare Authorization-header
-        return request.getHeader(HttpHeaders.AUTHORIZATION);
+        // nu hämtas gatewayen jwt bara från httponly cookien
+        return null;
     }
 
+    //access token hämtas nu från cookie, skickas vidare till service
     @GetMapping("/products")
     public ResponseEntity<String> products(HttpServletRequest request) {
-        return proxyService.products(getAuthorization(request));
+        String authorization = getAuthorization(request);
+
+        //kontroll för att se till att cookien finns
+        if (authorization == null) {
+            return ResponseEntity.status(401).build();
+        }
+        return proxyService.products(authorization);
     }
 
     @GetMapping("/products/{id}")
@@ -43,10 +49,13 @@ public class GatewayController {
             @PathVariable Long id,
             HttpServletRequest request) {
 
+        String authorization = getAuthorization(request);
+        if (authorization == null) {
+            return ResponseEntity.status(401).build();
+        }
+
         return proxyService.productById(
-                id,
-                getAuthorization(request)
-        );
+                id, authorization);
     }
 
     @PostMapping("/products")
@@ -54,9 +63,14 @@ public class GatewayController {
             @RequestBody String body,
             HttpServletRequest request) {
 
+        String authorization = getAuthorization(request);
+        if (authorization == null) {
+            return ResponseEntity.status(401).build();
+        }
+
         return proxyService.createProduct(
                 body,
-                getAuthorization(request),
+                authorization,
                 request.getHeader(HttpHeaders.CONTENT_TYPE)
         );
     }
@@ -93,9 +107,14 @@ public class GatewayController {
             @RequestBody String body,
             HttpServletRequest request) {
 
+        String authorization = getAuthorization(request);
+        if (authorization == null) {
+            return ResponseEntity.status(401).build();
+        }
+
         return proxyService.createOrder(
                 body,
-                getAuthorization(request),
+                authorization,
                 request.getHeader(HttpHeaders.CONTENT_TYPE)
         );
     }
