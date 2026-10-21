@@ -30,13 +30,13 @@ public class CorsConfig {
                 "Authorization", "Content-Type", "Accept"
         ));
 
-        // Tillåter cookies mellan frontend och gateway
         config.setAllowCredentials(true);
 
         UrlBasedCorsConfigurationSource source =
                 new UrlBasedCorsConfigurationSource();
 
         source.registerCorsConfiguration("/**", config);
+
         return source;
     }
 
