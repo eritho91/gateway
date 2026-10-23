@@ -136,7 +136,7 @@ public class GatewayProxyService {
                     .from("access_token", authResponse.accessToken())
                     .httpOnly(true)
                     .secure(cookieSecure)
-                    .sameSite(cookieSameSite)
+                    .sameSite("None")
                     .path("/")
                     .maxAge(Duration.ofSeconds(authResponse.expiresIn()))
                     .build();
