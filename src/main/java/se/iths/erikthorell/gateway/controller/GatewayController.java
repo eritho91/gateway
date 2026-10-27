@@ -1,3 +1,4 @@
+
 package se.iths.erikthorell.gateway.controller;
 
 import jakarta.servlet.http.Cookie;
@@ -28,42 +29,44 @@ public class GatewayController {
             }
         }
 
-        // nu hämtas gatewayen jwt bara från httponly cookien
         return null;
     }
 
-    //access token hämtas nu från cookie, skickas vidare till service
+    // Hämtar alla produkter
     @GetMapping("/products")
     public ResponseEntity<String> products(HttpServletRequest request) {
         String authorization = getAuthorization(request);
 
-        //kontroll för att se till att cookien finns
         if (authorization == null) {
             return ResponseEntity.status(401).build();
         }
+
         return proxyService.products(authorization);
     }
 
+    // Hämtar en specifik produkt
     @GetMapping("/products/{id}")
     public ResponseEntity<String> productById(
             @PathVariable Long id,
             HttpServletRequest request) {
 
         String authorization = getAuthorization(request);
+
         if (authorization == null) {
             return ResponseEntity.status(401).build();
         }
 
-        return proxyService.productById(
-                id, authorization);
+        return proxyService.productById(id, authorization);
     }
 
+    // Skapar en produkt
     @PostMapping("/products")
     public ResponseEntity<String> createProduct(
             @RequestBody String body,
             HttpServletRequest request) {
 
         String authorization = getAuthorization(request);
+
         if (authorization == null) {
             return ResponseEntity.status(401).build();
         }
@@ -75,6 +78,7 @@ public class GatewayController {
         );
     }
 
+    // Loggar in och skapar HttpOnly-cookie
     @PostMapping("/auth/login")
     public ResponseEntity<?> login(
             @RequestBody String body,
@@ -86,6 +90,7 @@ public class GatewayController {
         );
     }
 
+    // Registrerar användare
     @PostMapping("/auth/register")
     public ResponseEntity<String> register(
             @RequestBody String body,
@@ -97,17 +102,29 @@ public class GatewayController {
         );
     }
 
+    // Loggar ut användaren
     @PostMapping("/auth/logout")
     public ResponseEntity<Void> logout() {
         return proxyService.logout();
     }
 
+    // Kontrollerar befintlig session med JWT från HttpOnly-cookie
+    @GetMapping("/auth/me")
+    public ResponseEntity<String> session(
+            @CookieValue(name = "access_token", required = false)
+            String accessToken) {
+
+        return proxyService.session(accessToken);
+    }
+
+    // Skapar en order
     @PostMapping("/orders")
     public ResponseEntity<String> createOrder(
             @RequestBody String body,
             HttpServletRequest request) {
 
         String authorization = getAuthorization(request);
+
         if (authorization == null) {
             return ResponseEntity.status(401).build();
         }
