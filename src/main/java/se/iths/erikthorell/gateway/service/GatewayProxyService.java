@@ -136,7 +136,7 @@ public class GatewayProxyService {
                     .from("access_token", authResponse.accessToken())
                     .httpOnly(true)
                     .secure(cookieSecure)
-                    .sameSite("None")
+                    .sameSite(cookieSameSite)
                     .path("/")
                     .maxAge(Duration.ofSeconds(authResponse.expiresIn()))
                     .build();
@@ -184,6 +184,22 @@ public class GatewayProxyService {
                 .build();
     }
 
+    // Kontrollerar användarens session via auth-service
+    public ResponseEntity<String> session(String accessToken) {
+
+        // Returnerar 401 om JWT-cookien saknas
+        if (accessToken == null || accessToken.isBlank()) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+
+        // Skickar JWT till auth-service för verifiering
+        return forwardGet(
+                authServerUrl,
+                "/auth/me",
+                "Bearer " + accessToken
+        );
+    }
+
     private ResponseEntity<String> forwardGet(
             String baseUrl,
             String path,
@@ -214,6 +230,7 @@ public class GatewayProxyService {
         return send(builder, authorization);
     }
 
+    // Skickar HTTP-anrop till mikrotjänsten och returnerar svaret
     private ResponseEntity<String> send(
             HttpRequest.Builder builder,
             String authorization) {
